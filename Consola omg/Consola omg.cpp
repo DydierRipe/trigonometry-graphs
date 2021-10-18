@@ -89,9 +89,7 @@ PlanoCartesiano::PlanoCartesiano(Coords Cor1, Coords Cor2, Coords CP1, Coords CP
 
 	//arc(Centro.X, Centro.Y, 0, 360, 100); 
 
-	//sinus(Cor1, Cor2, 10, true, false, false, false);
-	//a_sec(Cor1, Cor2, 10, true, false, false, false);
-	//a_tan(Cor1, Cor2, 10, true, false, false, false);
+	// Function(Cor1, Cor2, 10, someNumber);
 }
 
 void PlanoCartesiano::CRectangle(Coords Cor1, Coords Cor2)
