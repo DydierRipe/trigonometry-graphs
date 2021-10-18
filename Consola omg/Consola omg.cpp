@@ -66,11 +66,12 @@ public:
 	// is a joke, adapt the arc radius acording to the vectors distance (needs to be fixed)
 
 
-	// the function format is like this: F(Start coords, End coords, number of iterations (Horizontal zoom os the function), etc (diferent graphics of the same concept));
-	// this functions have practically the same code, only the functio changes, all the algorithm is explained on the sinus part
-	void sinus(Coords CP1, Coords CP2, float iterator, bool bsin, bool bcos, bool bLimsin, bool bLimcos); // sinus, cosinus, trigonometric limit of sinus, trigonometric limit of cosinus
-	void a_tan(Coords CP1, Coords CP2, float iterator, bool btan, bool bcotan, bool bLimtan, bool bLimcot); // tangent, cotangent, trigonometric limit of tangent, trigonometric limit of cotangent
-	void a_sec(Coords CP1, Coords CP2, float iterator, bool bsec, bool bcosec, bool bLimsec, bool bLimcsc); // secant, cosecant, trigonometric limit of secant, trigonometric limit of cosecant
+	/* the function format is like this: F(Start coords, End coords, number of iterations(Horizontal zoom of the function), 
+
+	Identificator of the respective function... sinus id is 1, tangent id is 2, secant id is 3... if you want the 90° desviation of each function,
+	only need to sum 90 + Id (for example, for get de cotangent the id is 92), for get the trigonometrig limit of each functions only need to concatenate
+	"2" to the respective id (for get the limit of secant you need y}to type 32, and for get the limit of the cosinus tou need to type 912)*/
+	void Function(Coords CP1, Coords CP2, float iterator, int ID);
 
 	double CalDist(Coords CP1, Coords CP2); // calcule the distance between tho vectors
 	double CalAng(Coords CP1, int x, int y, bool Ft); // cancule the angle between twho vectors acording to the point 0
@@ -89,8 +90,8 @@ PlanoCartesiano::PlanoCartesiano(Coords Cor1, Coords Cor2, Coords CP1, Coords CP
 	//arc(Centro.X, Centro.Y, 0, 360, 100); 
 
 	//sinus(Cor1, Cor2, 10, true, false, false, false);
-	//a_sec(Cor1, Cor2, 10, false, false, false, true);
-	//a_tan(Cor1, Cor2, 10, false, false, true, false);
+	//a_sec(Cor1, Cor2, 10, true, false, false, false);
+	//a_tan(Cor1, Cor2, 10, true, false, false, false);
 }
 
 void PlanoCartesiano::CRectangle(Coords Cor1, Coords Cor2)
@@ -232,257 +233,75 @@ double PlanoCartesiano::CalAng(Coords CP1, int x, int y, bool Ft)
 	return Res;
 }
 
-void PlanoCartesiano::sinus(Coords CP1, Coords CP2, float iterator, bool bsin, bool bcos, bool bLimsin, bool bLimcos)
+void PlanoCartesiano::Function(Coords CP1, Coords CP2, float iterator, int ID)
 {
-	if (bsin)
-	{
-		double Pos[1000]; // save each result 
-		float Conti = -380; int J = 0; // this wrong
-
-		for (int i = -38; i <= 39; i++)
-		{
-			Pos[J] = sin(Conti * 3.141592653589793 / 180); // calcule all on radians
-			Conti += iterator;
-			J++;
-		}
-
-		J = 0;
-		for (float i = CP1.X; i < CP2.X; i+=10)
-		{
-			line(i, ((CP2.Y / 2) + (CP1.Y / 2)) + (Pos[J] * 100), i + 10, ((CP2.Y / 2) + (CP1.Y / 2)) + (Pos[J + 1] * 100));
-			//circle(i, (CP2.Y / 2) + (Pos[J] * 100), 10); // a graph with each point
-			J++;
-		}
-	}
-	if (bcos)
-	{
-		float Pos[1000];
-		float Conti = -380; int J = 0;
-
-		for (int i = -38; i <= 39; i++)
-		{
-			Pos[J] = cos(Conti * 3.141592653589793 / 180);
-			Conti += iterator;
-			J++;
-		}
-
-		J = 0;
-		for (float i = CP1.X; i < CP2.X; i += 10)
-		{
-			line(i, ((CP2.Y / 2) + (CP1.Y / 2)) + (Pos[J] * 100), i + 10, ((CP2.Y / 2) + (CP1.Y / 2)) + (Pos[J + 1] * 100));
-			//circle(i, (CP2.Y / 2) + (Pos[J] * 100), 10);
-			J++;
-		}
-	}
-	if (bLimsin)
-	{
-		float Pos[1000];
-		float Conti = -380; int J = 0;
-
-		for (int i = -38; i <= 39; i++)
-		{
-			Pos[J] = (sin(Conti * 3.141592653589793 / 180)) / (Conti * 3.141592653589793 / 180);
-			Conti += iterator;
-			J++;
-		}
-
-		J = 0;
-		for (float i = CP1.X; i < CP2.X; i += 10)
-		{
-			line(i, ((CP2.Y / 2) + (CP1.Y / 2)) + (Pos[J] * 100), i + 10, ((CP2.Y / 2) + (CP1.Y / 2)) + (Pos[J + 1] * 100));
-			//circle(i, (CP2.Y / 2) + (Pos[J] * 100), 10);
-			J++;
-		}
-	}
-	if (bLimcos)
-	{
-		float Pos[1000];
-		float Conti = -380; int J = 0;
-
-		for (int i = -38; i <= 39; i++)
-		{
-			Pos[J] = (cos(Conti * 3.141592653589793 / 180)) / (Conti * 3.141592653589793 / 180);
-			Conti += iterator;
-			J++;
-		}
-		
-		J = 0;
-		for (float i = CP1.X; i < CP2.X; i += 10)
-		{
-			line(i, ((CP2.Y / 2) + (CP1.Y / 2)) + (Pos[J] * 100), i + 10, ((CP2.Y / 2) + (CP1.Y / 2)) + (Pos[J + 1] * 100));
-			//circle(i, (CP2.Y / 2) + (Pos[J] * 100), 10);
-			J++;
-		}
-	}
 	
-}
+	double Pos[1000]; // save each result 
+	float Conti = -380; int J = 0; // this wrong
 
-void PlanoCartesiano::a_tan(Coords CP1, Coords CP2, float iterator, bool btan, bool bcotan, bool bLimtan, bool bLimcot)
-{
-	if (btan)
+	for (int i = -38; i <= 39; i++)
 	{
-		double Pos[1000];
-		float Conti = -380; int J = 0;
-
-		for (int i = -38; i <= 39; i++)
+		switch (ID)
 		{
-			Pos[J] = tan(Conti * 3.141592653589793 / 180);
-			Conti += iterator;
-			J++;
+			case 1:
+				Pos[J] = sin(Conti * 3.141592653589793 / 180); // calcule all on radians
+			break;
+
+			case 91:
+				Pos[J] = cos(Conti * 3.141592653589793 / 180); // calcule all on radians
+			break;
+
+			case 12:
+				Pos[J] = (sin(Conti * 3.141592653589793 / 180)) / (Conti * 3.141592653589793 / 180);
+			break;
+
+			case 912:
+				Pos[J] = (cos(Conti * 3.141592653589793 / 180)) / (Conti * 3.141592653589793 / 180);
+			break;
+
+			case 2:
+				Pos[J] = tan(Conti * 3.141592653589793 / 180); // calcule all on radians
+			break;
+
+			case 92:
+				Pos[J] = cotan(Conti * 3.141592653589793 / 180); // calcule all on radians
+			break;
+
+			case 22:
+				Pos[J] = (tan(Conti * 3.141592653589793 / 180)) / (Conti * 3.141592653589793 / 180);
+			break;
+
+			case 922:
+				Pos[J] = (cotan(Conti * 3.141592653589793 / 180)) / (Conti * 3.141592653589793 / 180);
+			break;
+
+			case 3:
+				Pos[J] = sec(Conti * 3.141592653589793 / 180); // calcule all on radians
+			break;
+
+			case 93:
+				Pos[J] = csc(Conti * 3.141592653589793 / 180); // calcule all on radians
+			break;
+
+			case 32:
+				Pos[J] = (sec(Conti * 3.141592653589793 / 180)) / (Conti * 3.141592653589793 / 180);
+			break;
+
+			case 932:
+				Pos[J] = (csc(Conti * 3.141592653589793 / 180)) / (Conti * 3.141592653589793 / 180);
+			break;
 		}
 
-		J = 0;
-		for (float i = CP1.X; i < CP2.X; i += 10)
-		{
-			
-			line(i, ((CP2.Y / 2) + (CP1.Y / 2)) + (Pos[J] * 100), i + 10, ((CP2.Y / 2) + (CP1.Y / 2)) + (Pos[J + 1] * 100));
-			//circle(i, (CP2.Y / 2) + (Pos[J] * 100), 10);
-			J++;
-		}
+		Conti += iterator;
+		J++;
 	}
-	if (bcotan)
+
+	J = 0;
+	for (float i = CP1.X; i < CP2.X; i+=10)
 	{
-		float Pos[1000];
-		float Conti = -380; int J = 0;
-
-		for (int i = -38; i <= 39; i++)
-		{
-			Pos[J] = cotan(Conti * 3.141592653589793 / 180);
-			Conti += iterator;
-			J++;
-		}
-
-		J = 0;
-		for (float i = CP1.X; i < CP2.X; i += 10)
-		{
-			line(i, ((CP2.Y / 2) + (CP1.Y / 2)) + (Pos[J] * 100), i + 10, ((CP2.Y / 2) + (CP1.Y / 2)) + (Pos[J + 1] * 100));
-			//circle(i, (CP2.Y / 2) + (Pos[J] * 100), 10);
-			J++;
-		}
-	}
-	if (bLimtan)
-	{
-		float Pos[1000];
-		float Conti = -380; int J = 0;
-
-		for (int i = -38; i <= 39; i++)
-		{
-			Pos[J] = (tan(Conti * 3.141592653589793 / 180)) / (Conti * 3.141592653589793 / 180);
-			Conti += iterator;
-			J++;
-		}
-
-		J = 0;
-		for (float i = CP1.X; i < CP2.X; i += 10)
-		{
-			line(i, ((CP2.Y / 2) + (CP1.Y / 2)) + (Pos[J] * 100), i + 10, ((CP2.Y / 2) + (CP1.Y / 2)) + (Pos[J + 1] * 100));
-			//circle(i, (CP2.Y / 2) + (Pos[J] * 100), 10);
-			J++;
-		}
-	}
-	if (bLimcot)
-	{
-		float Pos[1000];
-		float Conti = -380; int J = 0;
-
-		for (int i = -38; i <= 39; i++)
-		{
-			Pos[J] = (cotan(Conti * 3.141592653589793 / 180)) / (Conti * 3.141592653589793 / 180);
-			Conti += iterator;
-			J++;
-		}
-
-		J = 0;
-		for (float i = CP1.X; i < CP2.X; i += 10)
-		{
-			line(i, ((CP2.Y / 2) + (CP1.Y / 2)) + (Pos[J] * 100), i + 10, ((CP2.Y / 2) + (CP1.Y / 2)) + (Pos[J + 1] * 100));
-			//circle(i, (CP2.Y / 2) + (Pos[J] * 100), 10);
-			J++;
-		}
-	}
-}
-
-void PlanoCartesiano::a_sec(Coords CP1, Coords CP2, float iterator, bool bsec, bool bcosec, bool bLimsec, bool bLimcsc)
-{
-	if (bsec)
-	{
-		double Pos[1000];
-		float Conti = -380; int J = 0;
-
-		for (int i = -38; i <= 39; i++)
-		{
-			Pos[J] = sec(Conti * 3.141592653589793 / 180);
-			Conti += iterator;
-			J++;
-		}
-
-		J = 0;
-		for (float i = CP1.X; i < CP2.X; i += 10)
-		{
-			line(i, ((CP2.Y / 2) + (CP1.Y / 2)) + (Pos[J] * 100), i + 10, ((CP2.Y / 2) + (CP1.Y / 2)) + (Pos[J + 1] * 100));
-			//circle(i, (CP2.Y / 2) + (Pos[J] * 100), 10);
-			J++;
-		}
-	}
-	if (bcosec)
-	{
-		float Pos[1000];
-		float Conti = -380; int J = 0;
-
-		for (int i = -38; i <= 39; i++)
-		{
-			Pos[J] = csc(Conti * 3.141592653589793 / 180);
-			Conti += iterator;
-			J++;
-		}
-
-		J = 0;
-		for (float i = CP1.X; i < CP2.X; i += 10)
-		{
-			line(i, ((CP2.Y / 2) + (CP1.Y / 2)) + (Pos[J] * 100), i + 10, ((CP2.Y / 2) + (CP1.Y / 2)) + (Pos[J + 1] * 100));
-			//circle(i, (CP2.Y / 2) + (Pos[J] * 100), 10);
-			J++;
-		}
-	}
-	if (bLimsec)
-	{
-		float Pos[1000];
-		float Conti = -380; int J = 0;
-
-		for (int i = -38; i <= 39; i++)
-		{
-			Pos[J] = (sec(Conti * 3.141592653589793 / 180)) / (Conti * 3.141592653589793 / 180);
-			Conti += iterator;
-			J++;
-		}
-
-		J = 0;
-		for (float i = CP1.X; i < CP2.X; i += 10)
-		{
-			line(i, ((CP2.Y / 2) + (CP1.Y / 2)) + (Pos[J] * 100), i + 10, ((CP2.Y / 2) + (CP1.Y / 2)) + (Pos[J + 1] * 100));
-			//circle(i, (CP2.Y / 2) + (Pos[J] * 100), 10);
-			J++;
-		}
-	}
-	if (bLimcsc)
-	{
-		float Pos[1000];
-		float Conti = -380; int J = 0;
-
-		for (int i = -38; i <= 39; i++)
-		{
-			Pos[J] = (csc(Conti * 3.141592653589793 / 180)) / (Conti * 3.141592653589793 / 180);
-			Conti += iterator;
-			J++;
-		}
-
-		J = 0;
-		for (float i = CP1.X; i < CP2.X; i += 10)
-		{
-			line(i, ((CP2.Y / 2) + (CP1.Y / 2)) + (Pos[J] * 100), i + 10, ((CP2.Y / 2) + (CP1.Y / 2)) + (Pos[J + 1] * 100));
-			//circle(i, (CP2.Y / 2) + (Pos[J] * 100), 10);
-			J++;
-		}
+		line(i, ((CP2.Y / 2) + (CP1.Y / 2)) + (Pos[J] * 100), i + 10, ((CP2.Y / 2) + (CP1.Y / 2)) + (Pos[J + 1] * 100));
+		//circle(i, (CP2.Y / 2) + (Pos[J] * 100), 10); // a graph with each point
+		J++;
 	}
 }
 
