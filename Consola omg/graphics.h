@@ -24,6 +24,13 @@ COORD BGN, POS;
 short mov;
 short movx;
 
+struct Coords
+{
+	int X;
+	int Y;
+};
+
+
 void initgraph(void)
 {
 	system("cls");

@@ -1,6 +1,7 @@
 #include <Windows.h>
 #include "graphics.h"
 #include "MathAdv.h"
+#include "List.h"
 #include <conio.h>
 #include <iostream>
 #include <limits>
@@ -13,11 +14,6 @@ using namespace std;
 
 #define PI 3.141592653589793238462643383279502884197169399375105820974944592307816406286208998628034825342117067982148086513282306647093844609550582231725359408128481117450284102701938521105559644622948954930381964428810975665933446128475648233786783165271201909145648566923460348610454326648213393607260249141273724587006606315588174881520920962829254091715364367892590360011330530548820
 
-struct Coords
-{
-	int X;
-	int Y;
-};
 
 //---------------------------------------------------------
 struct console
@@ -58,9 +54,12 @@ class PlanoCartesiano
 	Coords Centro; // Center of the axis
 	bool A; // variable for do a "do once"
 	int XLineas; // useless variable for now
+	std::shared_ptr<Data> FrontRow, EndRow;
+	Cola Row;
 
 public:
 	PlanoCartesiano(Coords Cor1, Coords Cor2, Coords CP1, Coords CP2); // another constructor is needed
+	~PlanoCartesiano();
 	void CRectangle(Coords Cor1, Coords Cor2); // create the perimeter
 	void eje(Coords Cor1, Coords Cor2); // create the axis and the measures
 	void Vectores(Coords CP1, Coords CP2, Coords C1, Coords C2); // Graph the vectors and get their stats
@@ -79,6 +78,8 @@ public:
 	double CalAng(Coords CP1, int x, int y, bool Ft); // cancule the angle between two vectors acording to the point 0
 }; 
 
+PlanoCartesiano::~PlanoCartesiano() {}
+
 PlanoCartesiano::PlanoCartesiano(Coords Cor1, Coords Cor2, Coords CP1, Coords CP2)
 {
 	XLineas = 0;
@@ -87,12 +88,12 @@ PlanoCartesiano::PlanoCartesiano(Coords Cor1, Coords Cor2, Coords CP1, Coords CP
 	PlanoCartesiano::eje(Cor1, Cor2);
 	Centro.X = (Cor2.X / 2) + (Cor1.X / 2);
 	Centro.Y = (Cor2.Y / 2) + (Cor1.Y / 2);
-	Vectores(CP1, CP2, Cor1, Cor2);
+	//Vectores(CP1, CP2, Cor1, Cor2);
 
 	//arc(Centro.X - 110, Centro.Y - 110, 0, 360, 100); 
 	//oval(Centro.X, Centro.Y, 0, 360, 100, 50);
 
-	//Function(Cor1, Cor2, 10, 2);
+	Function(Cor1, Cor2, 10, 1);
 }
 
 void PlanoCartesiano::CRectangle(Coords Cor1, Coords Cor2)
@@ -105,12 +106,17 @@ void PlanoCartesiano::CRectangle(Coords Cor1, Coords Cor2)
 
 void PlanoCartesiano::eje(Coords Cor1, Coords Cor2)
 {
+	FrontRow = NULL;
+	EndRow = NULL;
+
 	line(Cor1.X, (Cor2.Y / 2) + (Cor1.Y / 2), Cor2.X, (Cor2.Y / 2) + (Cor1.Y / 2));
 	line((Cor2.X / 2) + (Cor1.X / 2), Cor1.Y, (Cor2.X / 2) + (Cor1.X / 2), Cor2.Y);
 
 	for (int i = Cor1.X; i < Cor2.X + (Cor1.X / 2); i += 10)
 	{
 		line(i, ((Cor2.Y / 2) + (Cor1.Y / 2)) + 3, i, ((Cor2.Y / 2) + (Cor1.Y / 2)) - 3); // graph the medition lines of the horizontal line (each 10 points)
+
+		Row.Insert(FrontRow, EndRow, i);
 		XLineas++;
 	}
 
@@ -236,11 +242,12 @@ double PlanoCartesiano::CalAng(Coords CP1, int x, int y, bool Ft)
 
 void PlanoCartesiano::Function(Coords CP1, Coords CP2, float iterator, int ID)
 {
+	
 
 	double Pos[1000]; // save each result 
-	float Conti = XLineas * -10 + CP1.X; int J = 0; // this wrong
+	float Conti = (XLineas * iterator) / -2; int J = 0; // this is wrong
 
-	for (int i = XLineas / -2; i <= XLineas / 2; i++)
+	for (int i = (XLineas * -1); i <= XLineas; i ++)
 	{
 		switch (ID)
 		{
@@ -292,6 +299,7 @@ void PlanoCartesiano::Function(Coords CP1, Coords CP2, float iterator, int ID)
 			Pos[J] = (csc(Conti * PI / 180)) / (Conti * PI / 180);
 			break;
 		}
+		//cout << Conti << " ";
 
 		Conti += iterator;
 		J++;
@@ -300,9 +308,9 @@ void PlanoCartesiano::Function(Coords CP1, Coords CP2, float iterator, int ID)
 	J = 0;
 	for (float i = CP1.X; i < CP2.X; i += 10)
 	{
-		
+
 		//line(i, ((CP2.Y / 2) + (CP1.Y / 2)) + (Pos[J] * -100), i + 10, ((CP2.Y / 2) + (CP1.Y / 2)) + (Pos[J + 1] * -100));
-		circle(i, ((CP2.Y - CP1.Y) / 2) + (Pos[J] * -100), 10); // a graph with each point
+		circle(Row.ShowAndDelete(FrontRow, EndRow), ((CP2.Y + CP1.Y) / 2) + (Pos[J] * -100), 5); // a graph with each point
 		J++;
 	}
 }
@@ -339,7 +347,6 @@ int main()
 		
 	
 	} while (true != false); // infinite bucle lol
-
 
 	return 0;
 }
