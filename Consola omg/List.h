@@ -11,16 +11,16 @@ class Cola
 {
 public:
 	void Insert(std::shared_ptr<Data> &Front, std::shared_ptr<Data> &End, int Number);
-	int  ShowAndDelete(std::shared_ptr<Data>& Front, std::shared_ptr<Data> End);
+	int  ShowAndDelete(std::shared_ptr<Data> &Front, std::shared_ptr<Data> &End);
 
-	bool voidData(std::shared_ptr<Data> Front);
+	bool voidData(std::shared_ptr<Data>  Front);
 
 	~Cola();
 };
 
-void Cola::Insert(std::shared_ptr<Data> &Front, std::shared_ptr<Data> &End, int Number)
+void Cola::Insert(std::shared_ptr<Data> &Front,std::shared_ptr<Data> &End, int Number)
 {
-	std::shared_ptr<Data> NewData(new Data());
+	std::shared_ptr<Data>  NewData (new Data());
 
 	NewData->Coordinates = Number;
 	NewData->Next = NULL;
@@ -36,7 +36,7 @@ void Cola::Insert(std::shared_ptr<Data> &Front, std::shared_ptr<Data> &End, int 
 	End = NewData;
 }
 
-int Cola::ShowAndDelete(std::shared_ptr<Data> &Front, std::shared_ptr<Data> End)
+int Cola::ShowAndDelete(std::shared_ptr<Data> &Front,std::shared_ptr<Data> &End)
 {
 	int Number = Front->Coordinates;
 
@@ -52,7 +52,7 @@ int Cola::ShowAndDelete(std::shared_ptr<Data> &Front, std::shared_ptr<Data> End)
 	return Number;
 }
 
-bool Cola::voidData(std::shared_ptr<Data> Front) { return (Front == NULL) ? true : false;}
+bool Cola::voidData(std::shared_ptr<Data>  Front) { return (Front == NULL) ? true : false;}
 
 Cola::~Cola() {}
 

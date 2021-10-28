@@ -54,8 +54,9 @@ class PlanoCartesiano
 	Coords Centro; // Center of the axis
 	bool A; // variable for do a "do once"
 	int XLineas; // useless variable for now
-	std::shared_ptr<Data> FrontRow, EndRow;
+	std::shared_ptr<Data> FrontRow1, EndRow1, FrontRow2, EndRow2;
 	Cola Row;
+	int InitX;
 
 public:
 	PlanoCartesiano(Coords Cor1, Coords Cor2, Coords CP1, Coords CP2); // another constructor is needed
@@ -73,6 +74,7 @@ public:
 	only need to sum 90 + Id (for example, for get de cotangent the id is 92), for get the trigonometrig limit of each functions only need to concatenate
 	"2" to the respective id (for get the limit of secant you need y}to type 32, and for get the limit of the cosinus tou need to type 912)*/
 	void Function(Coords CP1, Coords CP2, float iterator, int ID);
+	void AuxiliarFunction(int ID, float& Conti, double(&Pos)[1000], int& J, float iterator);
 
 	double CalDist(Coords CP1, Coords CP2); // calcule the distance between tho vectors
 	double CalAng(Coords CP1, int x, int y, bool Ft); // cancule the angle between two vectors acording to the point 0
@@ -84,10 +86,11 @@ PlanoCartesiano::PlanoCartesiano(Coords Cor1, Coords Cor2, Coords CP1, Coords CP
 {
 	XLineas = 0;
 
-	PlanoCartesiano::CRectangle(Cor1, Cor2);
-	PlanoCartesiano::eje(Cor1, Cor2);
 	Centro.X = (Cor2.X / 2) + (Cor1.X / 2);
 	Centro.Y = (Cor2.Y / 2) + (Cor1.Y / 2);
+	PlanoCartesiano::CRectangle(Cor1, Cor2);
+	PlanoCartesiano::eje(Cor1, Cor2);
+	//circle(Centro.X, Centro.Y, 10);
 	//Vectores(CP1, CP2, Cor1, Cor2);
 
 	//arc(Centro.X - 110, Centro.Y - 110, 0, 360, 100); 
@@ -106,17 +109,26 @@ void PlanoCartesiano::CRectangle(Coords Cor1, Coords Cor2)
 
 void PlanoCartesiano::eje(Coords Cor1, Coords Cor2)
 {
-	FrontRow = NULL;
-	EndRow = NULL;
+	FrontRow1 = EndRow1 = FrontRow2 = EndRow2 = NULL;
 
 	line(Cor1.X, (Cor2.Y / 2) + (Cor1.Y / 2), Cor2.X, (Cor2.Y / 2) + (Cor1.Y / 2));
 	line((Cor2.X / 2) + (Cor1.X / 2), Cor1.Y, (Cor2.X / 2) + (Cor1.X / 2), Cor2.Y);
 
-	for (int i = Cor1.X; i < Cor2.X + (Cor1.X / 2); i += 10)
+	for (int i = Centro.X; i > Cor1.X; i -= 10)
 	{
 		line(i, ((Cor2.Y / 2) + (Cor1.Y / 2)) + 3, i, ((Cor2.Y / 2) + (Cor1.Y / 2)) - 3); // graph the medition lines of the horizontal line (each 10 points)
 
-		Row.Insert(FrontRow, EndRow, i);
+		Row.Insert(FrontRow1, EndRow1, i);
+		XLineas++;
+	}
+
+	InitX = Centro.X - XLineas * 10;
+
+	for (int i = Centro.X; i < Cor2.X; i += 10)
+	{
+		line(i, ((Cor2.Y / 2) + (Cor1.Y / 2)) + 3, i, ((Cor2.Y / 2) + (Cor1.Y / 2)) - 3); // graph the medition lines of the horizontal line (each 10 points)
+
+		Row.Insert(FrontRow2, EndRow2, i);
 		XLineas++;
 	}
 
@@ -242,77 +254,88 @@ double PlanoCartesiano::CalAng(Coords CP1, int x, int y, bool Ft)
 
 void PlanoCartesiano::Function(Coords CP1, Coords CP2, float iterator, int ID)
 {
-	
-
 	double Pos[1000]; // save each result 
-	float Conti = (XLineas * iterator) / -2; int J = 0; // this is wrong
+	float Conti = InitX; int J = 0; // this is wrong
 
-	for (int i = (XLineas * -1); i <= XLineas; i ++)
+	for (int i = InitX; i < CP2.X; i+=10)
 	{
-		switch (ID)
-		{
-		case 1:
-			Pos[J] = sin(Conti * PI / 180); // calcule all on radians
-			break;
-
-		case 91:
-			Pos[J] = cos(Conti * PI / 180); // calcule all on radians
-			break;
-
-		case 12:
-			Pos[J] = (sin(Conti * PI / 180)) / (Conti * PI / 180);
-			break;
-
-		case 912:
-			Pos[J] = (cos(Conti * PI / 180)) / (Conti * PI / 180);
-			break;
-
-		case 2:
-			Pos[J] = tan(Conti * PI / 180); // calcule all on radians
-			break;
-
-		case 92:
-			Pos[J] = cotan(Conti * PI / 180); // calcule all on radians
-			break;
-
-		case 22:
-			Pos[J] = (tan(Conti * PI / 180)) / (Conti * PI / 180);
-			break;
-
-		case 922:
-			Pos[J] = (cotan(Conti * PI / 180)) / (Conti * PI / 180);
-			break;
-
-		case 3:
-			Pos[J] = sec(Conti * PI / 180); // calcule all on radians
-			break;
-
-		case 93:
-			Pos[J] = csc(Conti * PI / 180); // calcule all on radians
-			break;
-
-		case 32:
-			Pos[J] = (sec(Conti * PI / 180)) / (Conti * PI / 180);
-			break;
-
-		case 932:
-			Pos[J] = (csc(Conti * PI / 180)) / (Conti * PI / 180);
-			break;
-		}
-		//cout << Conti << " ";
-
-		Conti += iterator;
-		J++;
+		AuxiliarFunction(ID, Conti, Pos, J, iterator);
 	}
 
 	J = 0;
-	for (float i = CP1.X; i < CP2.X; i += 10)
-	{
 
-		//line(i, ((CP2.Y / 2) + (CP1.Y / 2)) + (Pos[J] * -100), i + 10, ((CP2.Y / 2) + (CP1.Y / 2)) + (Pos[J + 1] * -100));
-		circle(Row.ShowAndDelete(FrontRow, EndRow), ((CP2.Y + CP1.Y) / 2) + (Pos[J] * -100), 5); // a graph with each point
+	for (float i = InitX; i < CP2.X; i += 10)
+	{
+		if (i < Centro.X)
+		{
+			//line(i, ((CP2.Y / 2) + (CP1.Y / 2)) + (Pos[J] * -100), i + 10, ((CP2.Y / 2) + (CP1.Y / 2)) + (Pos[J + 1] * -100));
+			circle(Row.ShowAndDelete(FrontRow1, EndRow1), ((CP2.Y + CP1.Y) / 2) + (Pos[J] * 100), 5); // a graph with each point
+		}
+		else {
+			//line(i, ((CP2.Y / 2) + (CP1.Y / 2)) + (Pos[J] * -100), i + 10, ((CP2.Y / 2) + (CP1.Y / 2)) + (Pos[J + 1] * -100));
+			circle(Row.ShowAndDelete(FrontRow2, EndRow2), ((CP2.Y + CP1.Y) / 2) + (Pos[J] * 100), 5); // a graph with each point
+		}
+
 		J++;
 	}
+}
+
+void PlanoCartesiano::AuxiliarFunction(int ID, float& Conti, double (&Pos)[1000], int& J, float iterator)
+{
+	switch (ID)
+	{
+	case 1:
+		Pos[J] = sin(Conti * PI / 180); // calcule all on radians
+		break;
+
+	case 91:
+		Pos[J] = cos(Conti * PI / 180); // calcule all on radians
+		break;
+
+	case 12:
+		Pos[J] = (sin(Conti * PI / 180)) / (Conti * PI / 180);
+		break;
+
+	case 912:
+		Pos[J] = (cos(Conti * PI / 180)) / (Conti * PI / 180);
+		break;
+
+	case 2:
+		Pos[J] = tan(Conti * PI / 180); // calcule all on radians
+		break;
+
+	case 92:
+		Pos[J] = cotan(Conti * PI / 180); // calcule all on radians
+		break;
+
+	case 22:
+		Pos[J] = (tan(Conti * PI / 180)) / (Conti * PI / 180);
+		break;
+
+	case 922:
+		Pos[J] = (cotan(Conti * PI / 180)) / (Conti * PI / 180);
+		break;
+
+	case 3:
+		Pos[J] = sec(Conti * PI / 180); // calcule all on radians
+		break;
+
+	case 93:
+		Pos[J] = csc(Conti * PI / 180); // calcule all on radians
+		break;
+
+	case 32:
+		Pos[J] = (sec(Conti * PI / 180)) / (Conti * PI / 180);
+		break;
+
+	case 932:
+		Pos[J] = (csc(Conti * PI / 180)) / (Conti * PI / 180);
+		break;
+	}
+	//cout << Conti << " ";
+
+	Conti -= iterator;
+	J++;
 }
 
 // needed functions of graphics.h
