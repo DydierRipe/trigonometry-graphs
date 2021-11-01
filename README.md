@@ -1,7 +1,7 @@
 # trigonometry-graphs
 
 
-This project is a little project of some weeks, some things like the graphs position and some parameters still on debuging, others builders is needed too. The graphics are unexactly with their position, in the 2°th paramater of each trigonometric function.
+This project is a little project of some weeks, some things like the graphs position and some parameters still on debuging, others builders is needed too. The graphics are unexactly with their position.
 
 Graphics.h is modified with some functions, and MathAdv is a auxiliar function for get the cotangent, the secant and the cosecant.
 
